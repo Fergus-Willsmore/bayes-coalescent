@@ -20,4 +20,6 @@ pred <- predict(fit.lda, subset(ss.test,select = -class))$class
 source("ConfusionMtx.R")
 cnf <- confusion.matrix(ss.test$class,pred)
 
+#### Confusion Matrix ####
+
 print(cnf)
