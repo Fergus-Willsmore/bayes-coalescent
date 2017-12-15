@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" required="" version="2.4">
+
+
+    <data
+id="const"
+name="alignment">
+                    <sequence id="seq_1_1" taxon="1_1" totalcount="4" value="TACGTTCAGCGGCAGCTT"/>
+                    <sequence id="seq_1_10" taxon="1_10" totalcount="4" value="TTCTATGATGCGCAACGG"/>
+                    <sequence id="seq_1_2" taxon="1_2" totalcount="4" value="TTTTATGATGCGCAACGG"/>
+                    <sequence id="seq_1_3" taxon="1_3" totalcount="4" value="TTCTACGATGCGCCACGG"/>
+                    <sequence id="seq_1_4" taxon="1_4" totalcount="4" value="TACGTTCAGCGGCAGCTT"/>
+                    <sequence id="seq_1_5" taxon="1_5" totalcount="4" value="TTCTACGATGCGCCACGG"/>
+                    <sequence id="seq_1_6" taxon="1_6" totalcount="4" value="TTCTATGATGCGCAACGG"/>
+                    <sequence id="seq_1_7" taxon="1_7" totalcount="4" value="TTCTATGATGCGCAACGG"/>
+                    <sequence id="seq_1_8" taxon="1_8" totalcount="4" value="TTCGATGCTCGCTAGTGG"/>
+                    <sequence id="seq_1_9" taxon="1_9" totalcount="4" value="ATCGATGCTCGCTAGTGG"/>
+                </data>
+
+
+    
+
+
+    
+
+
+    
+<map name="Uniform" >beast.math.distributions.Uniform</map>
+<map name="Exponential" >beast.math.distributions.Exponential</map>
+<map name="LogNormal" >beast.math.distributions.LogNormalDistributionModel</map>
+<map name="Normal" >beast.math.distributions.Normal</map>
+<map name="Beta" >beast.math.distributions.Beta</map>
+<map name="Gamma" >beast.math.distributions.Gamma</map>
+<map name="LaplaceDistribution" >beast.math.distributions.LaplaceDistribution</map>
+<map name="prior" >beast.math.distributions.Prior</map>
+<map name="InverseGamma" >beast.math.distributions.InverseGamma</map>
+<map name="OneOnX" >beast.math.distributions.OneOnX</map>
+
+
+<run id="mcmc" spec="MCMC" chainLength="1000000" preBurnin="1000">
+    <state id="state" storeEvery="5000">
+        <tree id="Tree.t:const" name="stateNode">
+            <taxonset id="TaxonSet.const" spec="TaxonSet">
+                <alignment idref="const"/>
+            </taxonset>
+        </tree>
+        <parameter id="gammaShape.s:const" name="stateNode">1.0</parameter>
+        <parameter id="bPopSizes.t:const" dimension="4" lower="0.0" name="stateNode" upper="380000.0">380.0</parameter>
+        <stateNode id="bGroupSizes.t:const" spec="parameter.IntegerParameter" dimension="4">1</stateNode>
+        <parameter id="clockRate.c:const" name="stateNode">7.9E-4</parameter>
+    </state>
+
+    <init id="RandomTree.t:const" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:const" taxa="@const">
+        <populationModel id="ConstantPopulation0.t:const" spec="ConstantPopulation">
+            <parameter id="randomPopSize.t:const" name="popSize">1.0</parameter>
+        </populationModel>
+    </init>
+
+    <distribution id="posterior" spec="util.CompoundDistribution">
+        <distribution id="prior" spec="util.CompoundDistribution">
+            <distribution id="BayesianSkyline.t:const" spec="BayesianSkyline" groupSizes="@bGroupSizes.t:const" popSizes="@bPopSizes.t:const">
+                <treeIntervals id="BSPTreeIntervals.t:const" spec="TreeIntervals" tree="@Tree.t:const"/>
+            </distribution>
+            <distribution id="MarkovChainedPopSizes.t:const" spec="beast.math.distributions.MarkovChainDistribution" jeffreys="true" parameter="@bPopSizes.t:const"/>
+            <prior id="ClockPrior.c:const" name="distribution" x="@clockRate.c:const">
+                <Uniform id="Uniform.0" name="distr" upper="Infinity"/>
+            </prior>
+            <prior id="GammaShapePrior.s:const" name="distribution" x="@gammaShape.s:const">
+                <Exponential id="Exponential.0" name="distr">
+                    <parameter id="RealParameter.0" estimate="false" name="mean">1.0</parameter>
+                </Exponential>
+            </prior>
+            <distribution id="Sample_1.prior" spec="beast.math.distributions.MRCAPrior" monophyletic="true" tree="@Tree.t:const">
+                <taxonset id="Sample_1" spec="TaxonSet">
+                    <taxon id="1_1" spec="Taxon"/>
+                    <taxon id="1_2" spec="Taxon"/>
+                    <taxon id="1_3" spec="Taxon"/>
+                    <taxon id="1_4" spec="Taxon"/>
+                    <taxon id="1_5" spec="Taxon"/>
+                    <taxon id="1_6" spec="Taxon"/>
+                    <taxon id="1_7" spec="Taxon"/>
+                    <taxon id="1_8" spec="Taxon"/>
+                    <taxon id="1_9" spec="Taxon"/>
+                    <taxon id="1_10" spec="Taxon"/>
+                </taxonset>
+                <Uniform id="Uniform.3" name="distr" upper="Infinity"/>
+            </distribution>
+        </distribution>
+        <distribution id="likelihood" spec="util.CompoundDistribution" useThreads="true">
+            <distribution id="treeLikelihood.const" spec="ThreadedTreeLikelihood" data="@const" tree="@Tree.t:const">
+                <siteModel id="SiteModel.s:const" spec="SiteModel" gammaCategoryCount="4" shape="@gammaShape.s:const">
+                    <parameter id="mutationRate.s:const" estimate="false" name="mutationRate">1.0</parameter>
+                    <parameter id="proportionInvariant.s:const" estimate="false" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
+                    <substModel id="JC69.s:const" spec="JukesCantor"/>
+                </siteModel>
+                <branchRateModel id="StrictClock.c:const" spec="beast.evolution.branchratemodel.StrictClockModel" clock.rate="@clockRate.c:const"/>
+            </distribution>
+        </distribution>
+    </distribution>
+
+    <operator id="gammaShapeScaler.s:const" spec="ScaleOperator" parameter="@gammaShape.s:const" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="BayesianSkylineTreeScaler.t:const" spec="ScaleOperator" scaleFactor="0.5" tree="@Tree.t:const" weight="3.0"/>
+
+    <operator id="BayesianSkylineTreeRootScaler.t:const" spec="ScaleOperator" rootOnly="true" scaleFactor="0.5" tree="@Tree.t:const" weight="3.0"/>
+
+    <operator id="BayesianSkylineUniformOperator.t:const" spec="Uniform" tree="@Tree.t:const" weight="30.0"/>
+
+    <operator id="BayesianSkylineSubtreeSlide.t:const" spec="SubtreeSlide" tree="@Tree.t:const" weight="15.0"/>
+
+    <operator id="BayesianSkylineNarrow.t:const" spec="Exchange" tree="@Tree.t:const" weight="15.0"/>
+
+    <operator id="BayesianSkylineWide.t:const" spec="Exchange" isNarrow="false" tree="@Tree.t:const" weight="3.0"/>
+
+    <operator id="BayesianSkylineWilsonBalding.t:const" spec="WilsonBalding" tree="@Tree.t:const" weight="3.0"/>
+
+    <operator id="popSizesScaler.t:const" spec="ScaleOperator" parameter="@bPopSizes.t:const" scaleFactor="0.75" weight="15.0"/>
+
+    <operator id="groupSizesDelta.t:const" spec="DeltaExchangeOperator" integer="true" weight="6.0">
+        <intparameter idref="bGroupSizes.t:const"/>
+    </operator>
+
+    <operator id="StrictClockRateScaler.c:const" spec="ScaleOperator" parameter="@clockRate.c:const" scaleFactor="0.75" weight="3.0"/>
+
+    <operator id="strictClockUpDownOperator.c:const" spec="UpDownOperator" scaleFactor="0.75" weight="3.0">
+        <up idref="clockRate.c:const"/>
+        <down idref="Tree.t:const"/>
+    </operator>
+
+    <logger id="tracelog" fileName="const.log" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
+        <log idref="posterior"/>
+        <log idref="likelihood"/>
+        <log idref="prior"/>
+        <log idref="treeLikelihood.const"/>
+        <log id="TreeHeight.t:const" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:const"/>
+        <log idref="Sample_1.prior"/>
+        <log idref="gammaShape.s:const"/>
+        <log idref="BayesianSkyline.t:const"/>
+        <log idref="bPopSizes.t:const"/>
+        <log idref="bGroupSizes.t:const"/>
+        <log idref="clockRate.c:const"/>
+    </logger>
+
+    <logger id="screenlog" logEvery="1000">
+        <log idref="posterior"/>
+        <log id="ESS.0" spec="util.ESS" arg="@posterior"/>
+        <log idref="likelihood"/>
+        <log idref="prior"/>
+    </logger>
+
+    <logger id="treelog.t:const" fileName="$(tree).trees" logEvery="1000" mode="tree">
+        <log id="TreeWithMetaDataLogger.t:const" spec="beast.evolution.tree.TreeWithMetaDataLogger" tree="@Tree.t:const"/>
+    </logger>
+
+</run>
+
+</beast>

@@ -1,0 +1,36 @@
+#!/bin/bash
+# Variables
+NumSims=$2
+templateFile=$1.tpl
+estimateFile=$1.est
+DNA=/Users/Fergus/Desktop/DNA/fsc_simulations
+arlsumstat=arlsumstatmac_64bit
+bin=/Users/Fergus/bin
+export PATH=$PATH:/Users/Fergus/bin
+
+cd $DNA
+$bin/fsc26 -t $templateFile -n 1 -e $estimateFile -E $NumSims
+
+cd ${templateFile%.*}
+  cp $bin/$arlsumstat .
+  cp $bin/arl_run.ars .
+  cp $bin/ssdefs.txt .
+  counter=1;
+     for file in *.arp
+     do
+        if [ $counter -eq 1 ];  then
+           #Compute stats, reset output file "outss.txt" and include header
+           $bin/$arlsumstat  ./$file ${templateFile%.*}SS.txt 0 1 run_silent
+        else
+           #Compute stats and just append stats in output file "outss.txt"
+           $bin/$arlsumstat ./$file ${templateFile%.*}SS.txt 1 0 run_silent
+        fi
+        let counter=counter+1
+     done
+     #Remove result directory created by arlsumstat
+     rm -r *.res
+     rm *.arp
+     rm *.arb
+     rm *.par
+     mv ${templateFile%.*}SS.txt ..
+     cd ..

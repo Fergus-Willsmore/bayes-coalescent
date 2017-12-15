@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Convert from Arlequin to Nexus through PGDSpider
+inputFile=$1
+folder=/Users/Fergus/Desktop/DNA/fsc_simulations/Simple
+
+cd $folder
+java -Xmx1024m -Xms512m -jar /Applications/PGDSpider_2.1.1.3/PGDSpider2-cli.jar
+PGDSpiderCli -inputfile $1 -inputformat ARLEQUIN -outputfile const -outputformat NEXUS -spid arl_nex.spid

@@ -1,0 +1,23 @@
+<itsabeastystatewerein version='2.0' sample='1000000'>
+<statenode id='Tree.t:const'>((0:1.0297353812018055E-130,4:1.0297353812018055E-130)12:1.7101440804177376E-128,((((1:7.022333665473285E-132,7:7.022333665473285E-132)11:3.8707475050725615E-130,(2:1.6793306507291099E-130,6:1.6793306507291099E-130)17:2.261640190998185E-130)10:5.641201878930262E-130,(3:4.109031370186261E-130,5:4.109031370186261E-130)15:5.473141350471296E-130)16:8.074668436906698E-129,(8:4.074957473843331E-130,9:4.074957473843331E-130)14:8.625389961588121E-129)13:8.171528633325104E-129)18:0.0</statenode>
+<statenode id='gammaShape.s:const'>gammaShape.s:const[1 1] (0.001,1000.0): 1.5004267445835808 </statenode>
+<statenode id='bPopSizes.t:const'>bPopSizes.t:const[4 1] (0.0,380000.0): 4.197218642580485E-129 3.2654300390906415E-129 1.9269293545126135E-129 4.652178252869539E-129 </statenode>
+<statenode id='bGroupSizes.t:const'>bGroupSizes.t:const[4 1] (1,2147483647): 1 2 4 2 </statenode>
+<statenode id='clockRate.c:const'>clockRate.c:const[1 1] (0.0,Infinity): 3.8777732211599537E127 </statenode>
+</itsabeastystatewerein>
+<!--
+{"operators":[
+{"id":"gammaShapeScaler.s:const","p":0.2355704947443597,"accept":324,"reject":709,"acceptFC":311,"rejectFC":699,"rejectIv":0,"rejectOp":0},
+{"id":"BayesianSkylineTreeScaler.t:const","p":0.3021687823532887,"accept":7873,"reject":22134,"acceptFC":7588,"rejectFC":21792,"rejectIv":0,"rejectOp":0},
+{"id":"BayesianSkylineTreeRootScaler.t:const","p":0.29656387880304613,"accept":7494,"reject":23024,"acceptFC":7283,"rejectFC":22618,"rejectIv":3546,"rejectOp":3546},
+{"id":"BayesianSkylineUniformOperator.t:const","p":"NaN","accept":128971,"reject":173234,"acceptFC":126278,"rejectFC":169588,"rejectIv":0,"rejectOp":0},
+{"id":"BayesianSkylineSubtreeSlide.t:const","p":4.078715462409685,"accept":2929,"reject":148296,"acceptFC":198,"rejectFC":147947,"rejectIv":74076,"rejectOp":74076},
+{"id":"BayesianSkylineNarrow.t:const","p":"NaN","accept":73362,"reject":78064,"acceptFC":71860,"rejectFC":76509,"rejectIv":0,"rejectOp":0},
+{"id":"BayesianSkylineWide.t:const","p":"NaN","accept":1393,"reject":28737,"acceptFC":1367,"rejectFC":28167,"rejectIv":15975,"rejectOp":15975},
+{"id":"BayesianSkylineWilsonBalding.t:const","p":"NaN","accept":1373,"reject":28912,"acceptFC":1340,"rejectFC":28303,"rejectIv":9705,"rejectOp":9705},
+{"id":"popSizesScaler.t:const","p":0.2066489591803445,"accept":42503,"reject":109206,"acceptFC":39914,"rejectFC":108669,"rejectIv":0,"rejectOp":0},
+{"id":"groupSizesDelta.t:const","p":12.600739812182226,"accept":4684,"reject":55987,"acceptFC":4156,"rejectFC":55215,"rejectIv":53063,"rejectOp":53063},
+{"id":"StrictClockRateScaler.c:const","p":0.276228066233446,"accept":10039,"reject":20468,"acceptFC":9565,"rejectFC":20336,"rejectIv":0,"rejectOp":0},
+{"id":"strictClockUpDownOperator.c:const","p":0.2629486134252526,"accept":9020,"reject":21265,"acceptFC":8530,"rejectFC":21134,"rejectIv":0,"rejectOp":0}
+]}
+-->

@@ -1,0 +1,38 @@
+#!/bin/bash
+# Variables
+NumSims=10
+DNA=/Users/Fergus/Desktop/DNA/fsc_simulations/Simple
+arlsumstat=arlsumstatmac_64bit
+bin=/Users/Fergus/bin
+export PATH=$PATH:/Users/Fergus/bin
+
+# For each .par file perform fsc
+for parameterFile in *.par
+do
+cd $DNA
+$bin/fsc26 -i $DNA/$parameterFile -n $NumSims
+
+cd ${parameterFile%.*}
+  cp $bin/$arlsumstat .
+  cp $bin/arl_run.ars .
+  cp $bin/ssdefs.txt .
+  counter=1;
+     for file in *.arp
+     do
+        echo "Processing file $file"
+        if [ $counter -eq 1 ];  then
+           #Compute stats, reset output file "outss.txt" and include header
+           $bin/$arlsumstat  ./$file ${parameterFile%.*}SS.txt 0 1 run_silent
+        else
+           #Compute stats and just append stats in output file "outss.txt"
+           $bin/$arlsumstat ./$file ${parameterFile%.*}SS.txt 1 0 run_silent
+        fi
+        let counter=counter+1
+     done
+     #Remove result directory created by arlsumstat
+     pwd
+     rm -r *.res
+     rm *.arp
+     mv ${parameterFile%.*}SS.txt ..
+     cd ..
+done

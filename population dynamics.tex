@@ -1,0 +1,116 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{multicol}
+\usepackage{bm}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\title{Decision Algorithms for Classification}
+\author{Fergus Willsmore}
+
+\begin{document}
+\maketitle
+
+
+
+\section*{Multinomial Logistic Regression}
+
+In stattistics, logistic regression is used when the dependent variable is binary (two outcomes), and the multinomial logistic regression extends this to categorical.
+
+The linear predictor function $f(k,i)$ is used to predict the probability that observation $i$ has outcome $k$ and can be written as
+\begin{equation}\nonumber
+f(k,i)=\bm{\beta_k}\cdot \bm{x_i}
+\end{equation}  
+where $\bm{\beta_k}$ is the set of regression coefficients for outcome $k$ and $\bm{x_i}$ is the set of explanatory variables associated with observation $i$. The log odds transformations need can be normalised in the following way
+\begin{equation}
+\log \frac{P(G=k|X=x)}{P(G=K|X=x)}=f_k(x) \qquad \text{for }k=1,\dots,K-1
+\end{equation}
+
+The pivot class $K$ is arbitrary in odds-ratio and after simple reaarangement we achieve
+\begin{eqnarray*}
+P(G=k|X=x)&=&\frac{e^{\bm{\beta_q}{X_i}}}{1+\sum_{l=1}^{K-1}e^{\bm{\beta_l}{X_i}}} \quad \text{for } k=1,\dots,K-1\\
+P(G=k|X=x)&=&\frac{1}{1+\sum_{l=1}^{K-1}e^{\bm{\beta_l}{X_i}}}
+\end{eqnarray*}
+This relies on the independence of irrelevant alternatives. This condition means that if there are originally two options and one is chosen, if a new option is provided the alternative original option cannot be chosen.  
+ 
+\section*{Linear Discriminant Analysis}
+
+Given a set of classes $G=\{1,\dots,K\}$ and suppose $f_k(x)$ is the conditional density of $X$ in class $G=k$, and let $\pi_k$ be the prior probability of class $k$. Then from Bayes theorem the posterior distribution is given by
+\begin{equation}\nonumber
+P(G=k|X=x)=\frac{f_k(x)\pi_k}{\sum_{i=1}^{K}f_i(x)\pi_i}
+\end{equation} 
+We can see if we assume a uniform prior and LDA requires Gaussian densities for the conditional densities $f_k(x)$. LDA is a special case and assumes that the Gaussian densities have a common covariance matrix $\Sigma$. Therefore the class-conditional densities are given by
+\begin{equation}\nonumber
+f_k(x)=C\cdot e^{-\frac{1}{2}(x-\mu_k)^T\Sigma^{-1}(x-\mu_k)}
+\end{equation}
+For a logit model to compare two classes we look at the log ratio given by
+\begin{eqnarray*}
+\log \frac{P(G=k|X=x)}{P(G=l|X=x)}&=&\log \frac{f_k(x)}{f_l(x)}+\log \frac{\pi_k}{\pi_l}\\
+&=&\log \frac{\pi_k}{\pi_l}-\frac{1}{2}(\mu_k+\mu_l)^T\Sigma^{-1}(\mu_k-\mu_l)+x^T\Sigma^{-1}(\mu_k-\mu_l)
+\end{eqnarray*}
+We can define the linear discriminant functions to be 
+\begin{equation}\nonumber
+\delta_k(x)=x^T\Sigma^{-1}\mu_k-\frac{1}{2}\mu_k^T\Sigma^{-1}\mu_k+\log \pi_k
+\end{equation}
+which leads to the decision rule $G(x)=\argmax_k \delta_k(x)$. 
+
+However in general we need to estimate the parameters of our Gaussian densities and prior distribution using maximum likelihood estimates from the training data.  
+ 
+Through applying diagonalizatin we have canonical discriminant analysis which results in maximising the Rayleigh quotient. The class variability is given by the sample covariance of the class means
+\begin{equation}\nonumber
+\Sigma_b=\frac{1}{K}\sum_{i=1}^{K}n_i(\mu_i-\mu)(\mu_i-\mu)^T
+\end{equation} 
+where $\mu$ is the mean of class means and $n_i$ is the size of the class. We can then formulate an optimisation problem that maximises the class separation
+\begin{equation}\nonumber
+S=\argmax_{\bm w}\frac{\bm w^T\Sigma_b\bm w}{\bm w^T\Sigma\bm w}
+\end{equation}
+based on the coefficient vector $\bm w$. 
+
+\section*{Support Vector Machines}
+
+Suppose our training data consists of $N$ points that are perfectly separable into two classes, then there exists a hyperplane $f(x)=\beta_0+\beta^Tx$ that perfectly separates the data. The representation of this hyperplane is chosen such that $|\beta_0+\beta^Tx|=1$ holds for training examples $x$ that are closest to the hyperplane (support vectors). The disance from any point $x$ to the hyperplane is given by
+\begin{equation*}
+d=\frac{\beta_0+\beta^Tx}{||\beta ||}.
+\end{equation*}
+Therefore given the chosen hyperplane the distance from a support vector is $\frac{1}{||\beta||}$ which leads to the margin between the two closest support vectors to be 
+\begin{equation*}
+M=\frac{2}{||\beta||}.
+\end{equation*}
+We can formulate the primal optimisation problem to find the hyperplane that has the maximum margin as follows
+\begin{eqnarray*}
+\max M \text{ subject to } y_i(\beta_0+\beta^Tx_i)\ge M \quad  \forall i. 
+\end{eqnarray*}
+Alternatively we can write this as a minimisation prolem described as
+\begin{eqnarray*}
+\min ||\beta || \text{ subject to } y_i(\beta_0+\beta^Tx_i)\ge 1 \quad \forall i.
+\end{eqnarray*}
+In the non-separable case we cannot satisfy all of the constraints. Therefore we introduce positive slack variables $\zeta_i$ for feasibility and a penalty $C$ for constraint violation. Computationally it is convenient to express in the equivalent form
+\begin{eqnarray*}
+\min_{\beta_0,\beta} &&\frac{1}{2}||\beta ||^2+C\sum_{i=1}^{N} \zeta_i\\
+\text{s.t.} &&y_i(\beta_0+\beta^Tx_i)\ge 1-\zeta_i \quad \forall i\\
+&& \zeta_i\ge 0 \quad \forall i.
+\end{eqnarray*}
+Therefore the Langrangian (primal) function is given by 
+\begin{equation}\nonumber
+L_P=\frac{1}{2}||\beta ||^2+C\sum_{i=1}^{N} \zeta_i-\sum_{i=1}^{N} a_i[y_i(\beta_0+\beta^Tx_i)\- (1-\zeta_i)]-\sum_{i=1}^{N}\mu_i\zeta_i
+\end{equation}
+where $a_i$ and $\mu_i$ are the lagrange multipliers. To minimise w.r.t. $\beta$, $\beta_0$ and $\zeta_i$ we set the respective derivatives to zero.
+\begin{eqnarray*}
+\beta &=& \sum_{i=1}^{N}a_iy_ix_i\\
+0 &=& \sum_{i=1}^{N}a_iy_i\\
+a_i &=& C-\mu_i\quad \forall i\\
+\end{eqnarray*}
+Therefore the solution for $\beta$ has the form 
+\begin{equation*}
+\hat{\beta}=\sum_{i=1}^{N}\hat{a}_iy_ix_i
+\end{equation*}
+where $\hat a_i$ are the langrange multipliers corresponding to observations $i$ 
+
+
+\end{document}

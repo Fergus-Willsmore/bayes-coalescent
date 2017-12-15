@@ -1,0 +1,3 @@
+INFO  08-12 10:50:36,118 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /Applications/PGDSpider_2.1.1.3/spider.conf.xml
+DEBUG 08-12 10:50:36,414 (ParserFactory.java:getParserInstance:53)  -New ArlequinParser instance
+DEBUG 08-12 10:50:36,448 (ParserFactory.java:getParserInstance:53)  -New ArlequinParser instance
